@@ -1,10 +1,44 @@
-from db import db 
+from flask.views import MethodView
+from flask_smorest import Blueprint, abort
+from sqlalchemy.exc import SQLAlchemyError
 
-class ItemModel(db.Model):
-    __tablename__ = 'items'
+from db import db
+from models import ItemModel
+from schemas import ItemSchema, ItemUpdateSchema
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    price = db.Column(db.Float(precision=2), unique=False, nullable=False)
-    store_id = db.Columb(db.Integer, db.ForeignKey('stores.id'), unique=False, nullable=False)
-    store = db.relationship('StoreModel', back_populates='items')
+blp = Blueprint("Items", "items", description="Operations on items")
+
+
+@blp.route("/item/<string:item_id>")
+class Item(MethodView):
+    @blp.response(200, ItemSchema)
+    def get(self, item_id):
+        raise NotImplementedError("Getting an item is not implemented.")
+
+    def delete(self, item_id):
+        raise NotImplementedError("Deleting an item is not implemented.")
+
+    @blp.arguments(ItemUpdateSchema)
+    @blp.response(200, ItemSchema)
+    def put(self, item_data, item_id):
+        raise NotImplementedError("Updating an item is not implemented.")
+
+
+@blp.route("/item")
+class ItemList(MethodView):
+    @blp.response(200, ItemSchema(many=True))
+    def get(self):
+        raise NotImplementedError("Listing items is not implemented.")
+
+    @blp.arguments(ItemSchema)
+    @blp.response(201, ItemSchema)
+    def post(self, item_data):
+        item = ItemModel(**item_data)
+
+        try:
+            db.session.add(item)
+            db.session.commit()
+        except SQLAlchemyError:
+            abort(500, message="An error occurred while inserting the item.")
+
+        return item

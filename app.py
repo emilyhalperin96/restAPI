@@ -10,6 +10,7 @@ import secrets
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 from resourses.tag import blp as TagBlueprint
+from resources.user import blp as UserBlueprint
 
 #used for signing the JWTs 
 #generate value, copy it, and use it as the secret key 
@@ -37,6 +38,7 @@ def create_app(db_url=None):
 
     api.register_blueprint(ItemBlueprint)
     api.register_blueprint(StoreBlueprint)
+    api.register_blueprint(UserBlueprint)
 
     return app
 

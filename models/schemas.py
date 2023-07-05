@@ -39,3 +39,8 @@ class TagAndItemSchema(Schema):
     message = fields.Str()
     item = fields.Nested(ItemSchema)
     tag = fields.Nested(TagSchema)
+
+class UserSchema(Schema):
+    id = fields.Int(dumb_only=True)
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True) #not being sent to client w load only
